@@ -2,7 +2,7 @@
 
 Este documento proporciona una descripción detallada del modelo de clasificación de flores Iris, incluyendo cómo cargar los datos, entrenar el modelo y realizar predicciones. El modelo utiliza el algoritmo de Random Forest para clasificar flores Iris en tres categorías: "Iris-setosa," "Iris-versicolor," y "Iris-virginica."
 
-##Parte 1: Carga de Datos y Entrenamiento del Modelo
+## Parte 1: Carga de Datos y Entrenamiento del Modelo
 
 1.	Importación de Bibliotecas:
 •	Se importan las bibliotecas necesarias, incluyendo pandas para manipular datos, scikit-learn para el modelo Random Forest, y métricas de evaluación como precisión, informe de clasificación y matriz de confusión.
@@ -22,7 +22,7 @@ Este documento proporciona una descripción detallada del modelo de clasificaci�
 6.	Entrenamiento del Modelo:
 •	El modelo se entrena utilizando el conjunto de entrenamiento (X_train y y_train) para aprender a clasificar las flores.
 
-##Parte 2: Visualización y Evaluación del Modelo
+## Parte 2: Visualización y Evaluación del Modelo
 
 1.	Precisión del Modelo:
 •	Se calcula la precisión del modelo en el conjunto de prueba utilizando el método accuracy_score.
@@ -33,7 +33,7 @@ Este documento proporciona una descripción detallada del modelo de clasificaci�
 3.	Importancia de las Características:
 •	Se evalúa la importancia de las características en el modelo de Random Forest y se muestra gráficamente.
 
-##Parte 3: Realización de Predicciones
+## Parte 3: Realización de Predicciones
 
 1.	Solicitud de Características al Usuario:
 •	El usuario ingresa las características de una flor Iris, incluyendo la longitud y la anchura del sépalo y del pétalo.
@@ -47,6 +47,6 @@ Este documento proporciona una descripción detallada del modelo de clasificaci�
 4.	Resultado de la Predicción:
 •	La especie predicha se imprime en la consola como resultado de la predicción.
 
-##Resumen
+## Resumen
 
 Este flujo de trabajo permite a los usuarios cargar un modelo previamente entrenado y realizar predicciones sobre la especie de una flor Iris en función de las características ingresadas. El modelo es altamente preciso, como se demuestra en la precisión del conjunto de prueba y el informe de clasificación. Las características más importantes para el modelo se presentan en la gráfica de importancia de características. El código se ha diseñado para ser interactivo y fácil de usar para los usuarios.
