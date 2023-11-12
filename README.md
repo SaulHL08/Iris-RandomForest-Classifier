@@ -18,8 +18,8 @@ Configuración de un entorno Docker para ejecutar el modelo en un contenedor ind
 
 Este proyecto es una excelente demostración de cómo implementar un modelo de aprendizaje automático y empaquetarlo en un entorno Docker para facilitar su distribución y ejecución.
 
-## Autor:
+## Autor
 Saúl Hernández Latiznere
 
-Fecha:
+## Fecha
 8 de noviembre de 2023
