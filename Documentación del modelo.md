@@ -4,7 +4,8 @@ Este documento proporciona una descripción detallada del modelo de clasificaci�
 
 ## Parte 1: Carga de Datos y Entrenamiento del Modelo
 
-1.	Importación de Bibliotecas:
+### 1.	Importación de Bibliotecas:
+
 •	Se importan las bibliotecas necesarias, incluyendo pandas para manipular datos, scikit-learn para el modelo Random Forest, y métricas de evaluación como precisión, informe de clasificación y matriz de confusión.
 
 2.	Carga de Datos:
