@@ -22,6 +22,7 @@ except Exception as e:
 # Nombres de características esperadas
 FEATURE_NAMES = ['SepalLengthCm', 'SepalWidthCm', 'PetalLengthCm', 'PetalWidthCm']
 
+
 @app.route('/')
 def home():
     """Endpoint raíz"""
@@ -35,6 +36,7 @@ def home():
         }
     })
 
+
 @app.route('/health')
 def health():
     """Health check endpoint"""
@@ -45,12 +47,13 @@ def health():
         'timestamp': datetime.utcnow().isoformat()
     }), 200 if is_healthy else 503
 
+
 @app.route('/info')
 def info():
     """Información del modelo"""
     if model is None:
         return jsonify({'error': 'Model not loaded'}), 503
-    
+
     return jsonify({
         'model_type': 'RandomForestClassifier',
         'n_estimators': model.n_estimators,
@@ -58,11 +61,12 @@ def info():
         'classes': model.classes_.tolist() if hasattr(model, 'classes_') else []
     })
 
+
 @app.route('/predict', methods=['POST'])
 def predict():
     """
     Endpoint de predicción
-    
+
     Espera JSON con formato:
     {
         "SepalLengthCm": 5.1,
@@ -73,11 +77,11 @@ def predict():
     """
     if model is None:
         return jsonify({'error': 'Model not loaded'}), 503
-    
+
     try:
         # Obtener datos del request
         data = request.get_json()
-        
+
         # Validar que todos los campos estén presentes
         missing_fields = [field for field in FEATURE_NAMES if field not in data]
         if missing_fields:
@@ -85,7 +89,7 @@ def predict():
                 'error': 'Missing required fields',
                 'missing_fields': missing_fields
             }), 400
-        
+
         # Validar tipos y valores
         for field in FEATURE_NAMES:
             value = data[field]
@@ -95,13 +99,13 @@ def predict():
                     'expected': 'number',
                     'received': type(value).__name__
                 }), 400
-            
+
             if value < 0:
                 return jsonify({
                     'error': f'Invalid value for {field}',
                     'message': 'Values must be positive'
                 }), 400
-        
+
         # Preparar características
         features = np.array([[
             data['SepalLengthCm'],
@@ -109,11 +113,11 @@ def predict():
             data['PetalLengthCm'],
             data['PetalWidthCm']
         ]])
-        
+
         # Realizar predicción
         prediction = model.predict(features)[0]
         probabilities = model.predict_proba(features)[0]
-        
+
         # Preparar respuesta
         response = {
             'prediction': prediction,
@@ -124,19 +128,20 @@ def predict():
             'input': data,
             'timestamp': datetime.utcnow().isoformat()
         }
-        
+
         return jsonify(response), 200
-        
+
     except Exception as e:
         return jsonify({
             'error': 'Prediction failed',
             'message': str(e)
         }), 500
 
+
 if __name__ == '__main__':
     port = int(os.getenv('API_PORT', 5000))
     host = os.getenv('API_HOST', '0.0.0.0')
     debug = os.getenv('FLASK_DEBUG', '0') == '1'
-    
+
     print(f"🚀 Starting Iris ML API on {host}:{port}")
     app.run(host=host, port=port, debug=debug)
