@@ -1,0 +1,6 @@
+aws_region       = "us-east-1"
+project_name     = "iris-ml"
+environment      = "production"
+instance_type    = "t2.micro"
+ssh_key_name     = "iris-ml-key"
+allowed_ssh_cidr = ["YOUR_IP/32"]  # Reemplaza con tu IP
