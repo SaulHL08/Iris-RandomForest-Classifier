@@ -15,10 +15,10 @@ jobs:
       - name: 📥 Check out the repo
         uses: actions/checkout@v3
       
-      - name: 🤖 Train model
-        run: |
-          pip install -r requirements.txt
-          python src/train_model.py
+      #- name: 🤖 Train model
+      #  run: |
+      #    pip install -r requirements.txt
+      #    python src/train_model.py
       
       - name: 🔑 Log in to Docker Hub
         uses: docker/login-action@v2
