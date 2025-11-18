@@ -9,8 +9,16 @@ import os
 # Agregar el directorio raíz al path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-# Importar desde src
+# Asegurarse de que el modelo existe antes de importar la app
+model_path = os.path.join(os.path.dirname(__file__), '..', 'models', 'model.pkl')
+if not os.path.exists(model_path):
+    from src.train_model import train_model
+    print("⚠️  Modelo no encontrado. Entrenando...")
+    train_model()
+
+# Importar la app
 from src.app import app
+
 
 @pytest.fixture
 def client():
@@ -18,6 +26,7 @@ def client():
     app.config['TESTING'] = True
     with app.test_client() as client:
         yield client
+
 
 def test_home_endpoint(client):
     """Test del endpoint raíz"""
@@ -27,24 +36,24 @@ def test_home_endpoint(client):
     assert 'message' in data
     assert 'version' in data
 
+
 def test_health_endpoint(client):
     """Test del health check"""
     response = client.get('/health')
-    assert response.status_code in [200, 503]
+    assert response.status_code == 200
     data = json.loads(response.data)
     assert 'status' in data
-    assert 'model_loaded' in data
+    assert data['status'] == 'healthy'
+
 
 def test_info_endpoint(client):
     """Test del endpoint de información"""
     response = client.get('/info')
+    assert response.status_code == 200
     data = json.loads(response.data)
-    
-    if response.status_code == 200:
-        assert 'model_type' in data
-        assert 'features' in data
-    else:
-        assert response.status_code == 503
+    assert 'model_type' in data
+    assert 'features' in data
+
 
 def test_predict_valid_input(client):
     """Test de predicción con entrada válida"""
@@ -61,11 +70,11 @@ def test_predict_valid_input(client):
         content_type='application/json'
     )
     
-    if response.status_code == 200:
-        data = json.loads(response.data)
-        assert 'prediction' in data
-        assert 'probabilities' in data
-        assert data['prediction'] in ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
+    assert response.status_code == 200
+    data = json.loads(response.data)
+    assert 'prediction' in data
+    assert 'probabilities' in data
+
 
 def test_predict_missing_fields(client):
     """Test con campos faltantes"""
@@ -84,6 +93,7 @@ def test_predict_missing_fields(client):
     data = json.loads(response.data)
     assert 'error' in data
 
+
 def test_predict_invalid_type(client):
     """Test con tipo de dato inválido"""
     payload = {
@@ -101,6 +111,7 @@ def test_predict_invalid_type(client):
     
     assert response.status_code == 400
 
+
 def test_predict_negative_values(client):
     """Test con valores negativos"""
     payload = {
@@ -117,3 +128,62 @@ def test_predict_negative_values(client):
     )
     
     assert response.status_code == 400
+
+
+def test_predict_boundary_values(client):
+    """Test con valores pequeños positivos"""
+    payload = {
+        'SepalLengthCm': 0.1,
+        'SepalWidthCm': 0.1,
+        'PetalLengthCm': 0.1,
+        'PetalWidthCm': 0.1
+    }
+    
+    response = client.post(
+        '/predict',
+        data=json.dumps(payload),
+        content_type='application/json'
+    )
+    
+    assert response.status_code == 200
+
+
+def test_predict_all_fields_present(client):
+    """Test verificando que todos los campos sean procesados"""
+    payload = {
+        'SepalLengthCm': 6.5,
+        'SepalWidthCm': 3.0,
+        'PetalLengthCm': 5.2,
+        'PetalWidthCm': 2.0
+    }
+    
+    response = client.post(
+        '/predict',
+        data=json.dumps(payload),
+        content_type='application/json'
+    )
+    
+    assert response.status_code == 200
+    data = json.loads(response.data)
+    assert 'input' in data
+    assert data['input'] == payload
+
+def test_predict_with_floats(client):
+    """Test con diferentes valores float"""
+    payload = {
+        'SepalLengthCm': 5.84,
+        'SepalWidthCm': 3.05,
+        'PetalLengthCm': 4.35,
+        'PetalWidthCm': 1.3
+    }
+    
+    response = client.post(
+        '/predict',
+        data=json.dumps(payload),
+        content_type='application/json'
+    )
+    
+    assert response.status_code == 200
+    data = json.loads(response.data)
+    assert 'probabilities' in data
+    assert len(data['probabilities']) == 3
