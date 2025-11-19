@@ -27,3 +27,8 @@ output "api_url" {
   description = "URL to access the API"
   value       = "http://${aws_eip.iris_ml.public_ip}:5000"
 }
+
+output "ssh_command" {
+  description = "Command to SSH into the instance"
+  value       = "ssh -i ~/.ssh/iris-ml-key ubuntu@${aws_eip.iris_ml.public_ip}"
+}

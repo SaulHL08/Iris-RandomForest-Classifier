@@ -1,124 +1,176 @@
 # 🌸 Iris ML Classifier - DevOps Project
 
 ![CI Status](https://github.com/SaulHL08/Iris-RandomForest-Classifier/workflows/CI%20Pipeline/badge.svg)
-![Docker](https://img.shields.io/docker/v/saulhl08/iris-ml-classifier?label=docker)
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Docker](https://img.shields.io/docker/v/saulhl07/iris-ml-classifier?label=docker)
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-Sistema completo de clasificación de flores Iris con Machine Learning, containerización y despliegue automatizado usando prácticas DevOps.
+Sistema completo de clasificación de flores Iris usando Machine Learning con Random Forest, containerización con Docker y despliegue automatizado en AWS usando prácticas DevOps modernas.
+
+---
 
 ## 📋 Tabla de Contenidos
 
-- [Características](#características)
-- [Arquitectura](#arquitectura)
-- [Tecnologías](#tecnologías)
-- [Instalación](#instalación)
-- [Uso](#uso)
-- [Testing](#testing)
-- [Docker](#docker)
-- [CI/CD](#cicd)
-- [Despliegue](#despliegue)
+- [Características](#-características)
+- [Arquitectura](#-arquitectura)
+- [Demo en Vivo](#-demo-en-vivo)
+- [Tecnologías](#-tecnologías)
+- [Instalación Local](#-instalación-local)
+- [Uso con Docker](#-uso-con-docker)
+- [Despliegue en AWS](#-despliegue-en-aws)
+- [API Endpoints](#-api-endpoints)
+- [Testing](#-testing)
+- [CI/CD Pipeline](#-cicd-pipeline)
+- [Estructura del Proyecto](#-estructura-del-proyecto)
+- [Seguridad](#-seguridad)
+- [Documentación](#-documentación)
+- [Autor](#-autor)
+
+---
 
 ## ✨ Características
 
-- 🤖 Modelo Random Forest para clasificación de especies Iris
-- 🚀 API REST con Flask
-- 🐳 Containerización con Docker
-- ⚙️ CI/CD con GitHub Actions
-- 🏗️ Infraestructura como Código (Terraform + Ansible)
-- 🧪 Tests automatizados con pytest
-- 🔒 Prácticas de seguridad implementadas
-- 📊 Monitoreo y health checks
+- 🤖 **Machine Learning**: Modelo Random Forest entrenado con 95% de precisión
+- 🚀 **API REST**: Endpoints Flask para predicciones en tiempo real
+- 🐳 **Docker**: Containerización completa para portabilidad
+- ☁️ **AWS**: Infraestructura en la nube con EC2
+- 🔧 **IaC**: Terraform para gestión de infraestructura
+- ⚙️ **Automation**: Ansible para configuración y despliegue
+- 🔄 **CI/CD**: GitHub Actions para integración y despliegue continuo
+- 🧪 **Testing**: Suite completa de tests con pytest (91% cobertura)
+- 🔒 **Seguridad**: Contenedores con usuario no-root, secrets management
+- 📊 **Monitoring**: Health checks y logging
+
+---
 
 ## 🏗️ Arquitectura
 
-El proyecto utiliza una arquitectura cliente-servidor con los siguientes componentes:
+![Arquitectura](docs/architecture.md)
 
-- **API REST**: Flask application serving ML predictions
-- **ML Model**: Random Forest Classifier entrenado con dataset Iris
-- **Container**: Docker para portabilidad
-- **Infrastructure**: AWS EC2 con Terraform y Ansible
-- **CI/CD**: GitHub Actions para testing y despliegue automatizado
+### Componentes Principales:
+```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│   Usuario   │────▶│  API Flask   │────▶│  ML Model   │
+│  (Cliente)  │◀────│   (Port:5000)│◀────│ Random Forest│
+└─────────────┘     └──────────────┘     └─────────────┘
+                           │
+                           ▼
+                    ┌──────────────┐
+                    │ AWS EC2      │
+                    │ Ubuntu 22.04 │
+                    └──────────────┘
+```
+
+**[Ver diagrama completo](docs/architecture.md)**
+
+---
+
+## 🌐 Demo en Vivo
+
+**Imagen Docker Pública:**
+```bash
+docker pull saulhl07/iris-ml-classifier:latest
+```
+
+**Docker Hub:**
+[https://hub.docker.com/r/saulhl07/iris-ml-classifier](https://hub.docker.com/r/saulhl07/iris-ml-classifier)
+
+**Repositorio GitHub:**
+[https://github.com/SaulHL08/Iris-RandomForest-Classifier](https://github.com/SaulHL08/Iris-RandomForest-Classifier)
+
+---
 
 ## 🛠️ Tecnologías
 
-### Backend
+### Backend & ML
+![Python](https://img.shields.io/badge/Python-3.8+-3776AB?logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-3.0.0-000000?logo=flask&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-1.3.0-F7931E?logo=scikit-learn&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-2.0.0-150458?logo=pandas&logoColor=white)
+![NumPy](https://img.shields.io/badge/NumPy-1.24.0-013243?logo=numpy&logoColor=white)
+
+### DevOps & Cloud
+![Docker](https://img.shields.io/badge/Docker-20.10+-2496ED?logo=docker&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-EC2-FF9900?logo=amazon-aws&logoColor=white)
+![Terraform](https://img.shields.io/badge/Terraform-1.6+-7B42BC?logo=terraform&logoColor=white)
+![Ansible](https://img.shields.io/badge/Ansible-2.9+-EE0000?logo=ansible&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-CI/CD-2088FF?logo=github-actions&logoColor=white)
+
+### Testing & Quality
+![pytest](https://img.shields.io/badge/pytest-7.4.0-0A9EDC?logo=pytest&logoColor=white)
+![flake8](https://img.shields.io/badge/flake8-6.0.0-blue)
+![Coverage](https://img.shields.io/badge/coverage-91%25-brightgreen)
+
+---
+
+## 📦 Instalación Local
+
+### Prerrequisitos
 - Python 3.8+
-- Flask 3.0
-- scikit-learn 1.3
-- pandas 2.0
-- numpy 1.24
+- pip
+- virtualenv (opcional)
 
-### DevOps
-- Docker 20.10+
-- Terraform 1.6+
-- Ansible 2.9+
-- GitHub Actions
-
-### Cloud
-- AWS (EC2, VPC, Security Groups)
-
-## 📦 Instalación
-
-### Opción 1: Instalación Local
+### Pasos
 ```bash
-# Clonar repositorio
+# 1. Clonar repositorio
 git clone https://github.com/SaulHL08/Iris-RandomForest-Classifier.git
 cd Iris-RandomForest-Classifier
 
-# Crear entorno virtual (recomendado)
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+# 2. Crear entorno virtual (opcional pero recomendado)
+python3 -m venv venv
+source venv/bin/activate  # Linux/Mac
+# venv\Scripts\activate  # Windows
 
-# Instalar dependencias
+# 3. Instalar dependencias
 pip install -r requirements.txt
 
-# Entrenar modelo (si no existe)
+# 4. Entrenar modelo (si no existe)
 python src/train_model.py
 
-# Ejecutar API
+# 5. Ejecutar API
 python src/app.py
 ```
 
-### Opción 2: Docker
+La API estará disponible en: `http://localhost:5000`
+
+---
+
+## 🐳 Uso con Docker
+
+### Opción 1: Imagen desde Docker Hub (Recomendado)
 ```bash
-# Opción 2a: Construir localmente
+# Descargar y ejecutar
+docker run -d -p 5000:5000 --name iris-ml-api saulhl07/iris-ml-classifier:latest
+
+# Ver logs
+docker logs -f iris-ml-api
+
+# Detener
+docker stop iris-ml-api
+docker rm iris-ml-api
+```
+
+### Opción 2: Construir localmente
+```bash
+# Construir imagen
 docker build -t iris-ml-classifier .
-docker run -p 5000:5000 iris-ml-classifier
 
-# Opción 2b: Usar imagen de Docker Hub (cuando esté disponible)
-docker pull saulhl08/iris-ml-classifier:latest
-docker run -p 5000:5000 saulhl08/iris-ml-classifier:latest
+# Ejecutar
+docker run -d -p 5000:5000 --name iris-ml-api iris-ml-classifier
 
-# Opción 2c: Docker Compose
+# O usar docker-compose
 docker-compose up -d
 ```
 
-## 🚀 Uso
-
-### API Endpoints
-
-#### Health Check
+### Verificar funcionamiento
 ```bash
+# Health check
 curl http://localhost:5000/health
-```
 
-**Respuesta:**
-```json
-{
-  "status": "healthy",
-  "model_loaded": true,
-  "timestamp": "2024-11-18T08:30:00.000000"
-}
-```
-
-#### Información del Modelo
-```bash
+# Obtener info del modelo
 curl http://localhost:5000/info
-```
 
-#### Predicción
-```bash
+# Realizar predicción
 curl -X POST http://localhost:5000/predict \
   -H "Content-Type: application/json" \
   -d '{
@@ -129,173 +181,46 @@ curl -X POST http://localhost:5000/predict \
   }'
 ```
 
-**Respuesta:**
-```json
-{
-  "prediction": "Iris-setosa",
-  "probabilities": {
-    "Iris-setosa": 1.0,
-    "Iris-versicolor": 0.0,
-    "Iris-virginica": 0.0
-  },
-  "input": {
-    "SepalLengthCm": 5.1,
-    "SepalWidthCm": 3.5,
-    "PetalLengthCm": 1.4,
-    "PetalWidthCm": 0.2
-  },
-  "timestamp": "2024-11-18T08:30:00.000000"
-}
-```
+---
 
-## 🧪 Testing
-```bash
-# Ejecutar todos los tests
-pytest tests/ -v
+## ☁️ Despliegue en AWS
 
-# Con cobertura
-pytest tests/ --cov=src --cov-report=html
-
-# Ver reporte de cobertura
-open htmlcov/index.html  # Linux: xdg-open htmlcov/index.html
-```
-
-## 🐳 Docker
-
-### Build
-```bash
-docker build -t iris-ml-classifier:latest .
-```
-
-### Run
-```bash
-docker run -d \
-  -p 5000:5000 \
-  --name iris-ml-api \
-  iris-ml-classifier:latest
-```
-
-### Logs
-```bash
-docker logs -f iris-ml-api
-```
-
-### Stop y Remove
-```bash
-docker stop iris-ml-api
-docker rm iris-ml-api
-```
-
-## ⚙️ CI/CD
-
-### Continuous Integration
-
-Cada push o pull request ejecuta automáticamente:
-
-1. ✅ Lint con flake8
-2. 🧪 Tests con pytest
-3. 📊 Análisis de cobertura
-4. 🐳 Build de Docker image
-5. 🔒 Escaneo de seguridad con Trivy
-
-Ver el estado del pipeline en: [GitHub Actions](https://github.com/SaulHL08/Iris-RandomForest-Classifier/actions)
-
-## 🚢 Despliegue
+### Prerrequisitos
+- Cuenta AWS (Free Tier)
+- AWS CLI configurado
+- Terraform >= 1.6
+- Ansible >= 2.9
+- SSH key generado
 
 ### Paso 1: Provisionar Infraestructura con Terraform
 ```bash
 cd IaC/terraform
+
+# Inicializar Terraform
 terraform init
+
+# Ver plan
 terraform plan
+
+# Aplicar (crear recursos)
 terraform apply
+
+# Guardar IP pública
+export EC2_IP=$(terraform output -raw instance_public_ip)
+echo $EC2_IP
 ```
 
 ### Paso 2: Desplegar Aplicación con Ansible
 ```bash
-cd IaC/ansible
-cp inventory.ini.example inventory.ini
-# Editar inventory.ini con la IP de EC2
-ansible-playbook deploy.yml
-```
+cd ../ansible
 
-## 🔒 Seguridad
+# Crear inventario con la IP real
+cat > inventory.ini << EOF
+[iris_ml_servers]
+production ansible_host=$EC2_IP ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/iris-ml-key
 
-- ✅ Contenedores con usuario no-root
-- ✅ Validación de entrada en API
-- ✅ Secrets management con variables de entorno
-- ✅ Escaneo de vulnerabilidades en CI
-- ✅ Security Groups restrictivos en AWS
-- ✅ Health checks configurados
-
-## 📚 Documentación Adicional
-
-- [Documentación del Modelo](Documentación%20del%20modelo.md)
-- [Guía de Terraform](IaC/terraform/README.md)
-- [Guía de Ansible](IaC/ansible/README.md)
-
-## 👥 Autor
-
-- **Saúl Hernández Latiznere** - [SaulHL08](https://github.com/SaulHL08)
-
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT.
-
-## 🙏 Agradecimientos
-
-- Dataset: [Iris Flower Dataset](https://archive.ics.uci.edu/ml/datasets/iris)
-- Frameworks: Flask, scikit-learn
-- Infrastructure: AWS, Terraform, Ansible
-
----
-
-⭐ Si este proyecto te fue útil, considera darle una estrella!
-
-## 📞 Estructura del Proyecto
-```
-Iris-RandomForest-Classifier/
-├── .github/
-│   └── workflows/
-│       └── ci.yml              # Pipeline CI/CD
-├── src/
-│   ├── app.py                  # API Flask
-│   └── train_model.py          # Entrenamiento del modelo
-├── tests/
-│   ├── __init__.py
-│   └── test_app.py             # Tests unitarios
-├── models/
-│   └── model.pkl               # Modelo entrenado
-├── data/
-│   └── Iris.csv                # Dataset
-├── IaC/
-│   ├── terraform/              # Scripts de Terraform
-│   └── ansible/                # Playbooks de Ansible
-├── Dockerfile                  # Configuración Docker
-├── docker-compose.yml          # Docker Compose
-├── requirements.txt            # Dependencias Python
-└── README.md                   # Este archivo
-```# Iris-RandomForest-Classifier
-
-## Descripción
-
-Este repositorio contiene un proyecto de aprendizaje automático que implementa un clasificador de Random Forest para el conjunto de datos Iris. El modelo de clasificación se entrena en las características de las flores Iris y es capaz de predecir la especie de una flor dadas sus características. El proyecto también incluye la implementación de un entorno Docker para ejecutar el modelo en un contenedor independiente.
-
-## Características del Proyecto
-
-Implementación de un modelo de Random Forest para clasificar flores Iris.
-
-División de datos en conjuntos de entrenamiento y prueba.
-
-Evaluación del modelo y generación de informes de clasificación y matriz de confusión.
-
-Visualización de la precisión por clase y la importancia de las características.
-
-Configuración de un entorno Docker para ejecutar el modelo en un contenedor independiente.
-
-Este proyecto es una excelente demostración de cómo implementar un modelo de aprendizaje automático y empaquetarlo en un entorno Docker para facilitar su distribución y ejecución.
-
-## Autor
-Saúl Hernández Latiznere
-
-## Fecha
-8 de noviembre de 2023
+[iris_ml_servers:vars]
+ansible_python_interpreter=/usr/bin/python3
+docker_image=saulhl07/iris-ml-classifier
+docker_tag=latest
+app_port=5000

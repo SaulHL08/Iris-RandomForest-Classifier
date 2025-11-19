@@ -84,7 +84,7 @@ resource "aws_security_group" "iris_ml" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = var.allowed_ssh_cidr
+    cidr_blocks = [var.my_ip]
     description = "SSH access"
   }
 
@@ -111,10 +111,10 @@ resource "aws_security_group" "iris_ml" {
   }
 }
 
-# Key Pair (debes tener tu clave pública)
+# Key Pair
 resource "aws_key_pair" "deployer" {
   key_name   = var.ssh_key_name
-  public_key = file("~/.ssh/id_rsa.pub")  # Ajusta la ruta si es necesaria
+  public_key = file("~/.ssh/iris-ml-key.pub")
 }
 
 # EC2 Instance
@@ -134,7 +134,7 @@ resource "aws_instance" "iris_ml" {
   user_data = <<-EOF
               #!/bin/bash
               apt-get update
-              apt-get install -y python3-pip curl
+              apt-get install -y curl
               EOF
 
   tags = {

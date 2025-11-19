@@ -1,39 +1,33 @@
-# Terraform Configuration
+# Terraform Infrastructure
 
 ## Prerequisites
 
-1. AWS CLI configured
-2. Terraform installed
-3. SSH key pair generated
+1. AWS CLI configured with credentials
+2. Terraform installed (>= 1.0)
+3. SSH key generated (~/.ssh/iris-ml-key)
 
-## Generate SSH Key
+## Quick Start
 ```bash
-ssh-keygen -t rsa -b 4096 -f ~/.ssh/iris-ml-key
-```
-
-## Usage
-```bash
-# Initialize
+# Initialize Terraform
 terraform init
 
-# Copy example vars
-cp terraform.tfvars.example terraform.tfvars
-# Edit terraform.tfvars with your values
-
-# Plan
+# Preview changes
 terraform plan
 
-# Apply
+# Apply (create infrastructure)
 terraform apply
 
 # Get outputs
 terraform output
 
-# Destroy
+# Destroy (delete everything)
 terraform destroy
 ```
 
-## Outputs
+## Costs
 
-- `instance_public_ip`: IP to SSH and access API
-- `api_url`: Full URL to API
+Using t2.micro instance in Free Tier:
+- **First 750 hours/month: FREE**
+- After that: ~$0.0116/hour (~$8.5/month)
+
+**Remember to destroy resources when done to avoid charges!**
