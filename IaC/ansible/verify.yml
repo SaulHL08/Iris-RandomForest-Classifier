@@ -1,0 +1,41 @@
+---
+- name: Verify Iris ML Application
+  hosts: iris_ml_servers
+  become: no
+  
+  tasks:
+    - name: Check if container is running
+      command: docker ps --filter "name=iris-ml-api" --format "{{.Status}}"
+      register: container_status
+      changed_when: false
+    
+    - name: Display container status
+      debug:
+        msg: "Container status: {{ container_status.stdout }}"
+    
+    - name: Test health endpoint
+      uri:
+        url: "http://{{ ansible_host }}:{{ app_port }}/health"
+        return_content: yes
+      register: health_response
+    
+    - name: Display health response
+      debug:
+        var: health_response.json
+    
+    - name: Test prediction endpoint
+      uri:
+        url: "http://{{ ansible_host }}:{{ app_port }}/predict"
+        method: POST
+        body_format: json
+        body:
+          SepalLengthCm: 5.1
+          SepalWidthCm: 3.5
+          PetalLengthCm: 1.4
+          PetalWidthCm: 0.2
+        return_content: yes
+      register: predict_response
+    
+    - name: Display prediction result
+      debug:
+        var: predict_response.json

@@ -1,0 +1,31 @@
+---
+- name: Deploy Iris ML Application
+  hosts: iris_ml_servers
+  become: yes
+  
+  pre_tasks:
+    - name: Display deployment information
+      debug:
+        msg: 
+          - "Deploying to: {{ inventory_hostname }}"
+          - "Docker image: {{ docker_image }}:{{ docker_tag }}"
+          - "API port: {{ app_port }}"
+  
+  roles:
+    - docker
+    - iris-ml
+  
+  post_tasks:
+    - name: Verify deployment
+      uri:
+        url: "http://{{ ansible_host }}:{{ app_port }}/health"
+        return_content: yes
+      register: health_check
+    
+    - name: Display health check result
+      debug:
+        var: health_check.json
+    
+    - name: Final message
+      debug:
+        msg: "✅ Deployment completed successfully!"

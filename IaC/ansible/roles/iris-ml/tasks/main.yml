@@ -1,0 +1,52 @@
+---
+- name: Pull Docker image
+  docker_image:
+    name: "{{ docker_image }}:{{ docker_tag }}"
+    source: pull
+    force_source: yes
+
+- name: Stop existing container
+  docker_container:
+    name: iris-ml-api
+    state: absent
+  ignore_errors: yes
+
+- name: Create logs directory
+  file:
+    path: /home/ubuntu/logs
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+    mode: '0755'
+
+- name: Run new container
+  docker_container:
+    name: iris-ml-api
+    image: "{{ docker_image }}:{{ docker_tag }}"
+    state: started
+    restart_policy: unless-stopped
+    ports:
+      - "{{ app_port }}:5000"
+    env:
+      FLASK_ENV: production
+      MODEL_PATH: /app/models/model.pkl
+    volumes:
+      - /home/ubuntu/logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+- name: Wait for application to be ready
+  uri:
+    url: "http://localhost:{{ app_port }}/health"
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 10
+  delay: 5
+
+- name: Display application URL
+  debug:
+    msg: "Application is running at http://{{ ansible_host }}:{{ app_port }}"
