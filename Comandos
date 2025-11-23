@@ -1,0 +1,496 @@
+================================================================================
+                    IRIS ML CLASSIFIER - COMANDOS DE REFERENCIA
+================================================================================
+
+================================================================================
+1. SETUP INICIAL
+================================================================================
+
+# Clonar repositorio
+git clone https://github.com/SaulHL08/Iris-RandomForest-Classifier.git
+cd Iris-RandomForest-Classifier
+
+# Crear entorno virtual (opcional)
+python3 -m venv venv
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate     # Windows
+
+# Instalar dependencias
+pip install -r requirements.txt
+
+================================================================================
+2. MACHINE LEARNING - ENTRENAR MODELO
+================================================================================
+
+# Entrenar modelo
+python src/train_model.py
+
+# Verificar que se creó el modelo
+ls -lh models/model.pkl
+
+================================================================================
+3. EJECUTAR API LOCALMENTE
+================================================================================
+
+# Ejecutar aplicación Flask
+python src/app.py
+
+# La API estará disponible en http://localhost:5000
+
+# En otra terminal, probar endpoints:
+
+# Home
+curl http://localhost:5000/
+
+# Health check
+curl http://localhost:5000/health
+
+# Información del modelo
+curl http://localhost:5000/info
+
+# Predicción - Iris-setosa
+curl -X POST http://localhost:5000/predict \
+  -H "Content-Type: application/json" \
+  -d '{
+    "SepalLengthCm": 5.1,
+    "SepalWidthCm": 3.5,
+    "PetalLengthCm": 1.4,
+    "PetalWidthCm": 0.2
+  }'
+
+# Predicción - Iris-virginica
+curl -X POST http://localhost:5000/predict \
+  -H "Content-Type: application/json" \
+  -d '{
+    "SepalLengthCm": 6.5,
+    "SepalWidthCm": 3.0,
+    "PetalLengthCm": 5.2,
+    "PetalWidthCm": 2.0
+  }'
+
+# Predicción - Iris-versicolor
+curl -X POST http://localhost:5000/predict \
+  -H "Content-Type: application/json" \
+  -d '{
+    "SepalLengthCm": 5.7,
+    "SepalWidthCm": 2.8,
+    "PetalLengthCm": 4.1,
+    "PetalWidthCm": 1.3
+  }'
+
+================================================================================
+4. TESTING
+================================================================================
+
+# Ejecutar todos los tests
+pytest tests/ -v
+
+# Tests con cobertura
+pytest tests/ -v --cov=src --cov-report=term
+
+# Generar reporte HTML de cobertura
+pytest tests/ --cov=src --cov-report=html
+open htmlcov/index.html  # Mac
+xdg-open htmlcov/index.html  # Linux
+
+# Ejecutar solo un test específico
+pytest tests/test_app.py::test_health_endpoint -v
+
+# Lint con flake8
+flake8 src/ tests/ --max-line-length=127
+
+================================================================================
+5. DOCKER - LOCAL
+================================================================================
+
+# Construir imagen
+docker build -t iris-ml-classifier:latest .
+
+# Ver imágenes
+docker images | grep iris
+
+# Ejecutar contenedor
+docker run -d -p 5000:5000 --name iris-ml-api iris-ml-classifier:latest
+
+# Ver contenedores corriendo
+docker ps
+
+# Ver logs del contenedor
+docker logs iris-ml-api
+docker logs -f iris-ml-api  # Seguir logs en tiempo real
+
+# Detener contenedor
+docker stop iris-ml-api
+
+# Eliminar contenedor
+docker rm iris-ml-api
+
+# Entrar al contenedor (debug)
+docker exec -it iris-ml-api bash
+
+# Limpiar contenedor específico
+docker stop iris-ml-api && docker rm iris-ml-api
+
+# Eliminar imagen
+docker rmi iris-ml-classifier:latest
+
+================================================================================
+6. DOCKER COMPOSE
+================================================================================
+
+# Iniciar servicios
+docker-compose up -d
+
+# Ver logs
+docker-compose logs -f
+
+# Detener servicios
+docker-compose down
+
+# Reconstruir y reiniciar
+docker-compose up -d --build
+
+================================================================================
+7. DOCKER HUB
+================================================================================
+
+# Login en Docker Hub
+docker login
+# Username: saulhl07
+# Password: [tu password]
+
+# Tag imagen
+docker tag iris-ml-classifier:latest saulhl07/iris-ml-classifier:latest
+docker tag iris-ml-classifier:latest saulhl07/iris-ml-classifier:v1.0.0
+
+# Push a Docker Hub
+docker push saulhl07/iris-ml-classifier:latest
+docker push saulhl07/iris-ml-classifier:v1.0.0
+
+# Pull desde Docker Hub
+docker pull saulhl07/iris-ml-classifier:latest
+
+# Ejecutar imagen de Docker Hub
+docker run -p 5000:5000 saulhl07/iris-ml-classifier:latest
+
+================================================================================
+8. GIT - CONTROL DE VERSIONES
+================================================================================
+
+# Ver estado
+git status
+
+# Ver commits
+git log --oneline --graph --all
+
+# Agregar archivos
+git add .
+git add archivo_especifico.py
+
+# Commit
+git commit -m "tipo: descripción breve"
+
+# Ejemplos de commits:
+git commit -m "feat: add new endpoint"
+git commit -m "fix: resolve Docker connection issue"
+git commit -m "docs: update README"
+git commit -m "test: add unit tests for predictions"
+
+# Push
+git push origin main
+git push origin feature/nombre-rama
+
+# Crear rama
+git checkout -b feature/nueva-funcionalidad
+
+# Cambiar de rama
+git checkout main
+
+# Merge
+git merge feature/nombre-rama
+
+# Ver ramas
+git branch -a
+
+================================================================================
+9. AWS CLI - CONFIGURACIÓN
+================================================================================
+
+# Instalar AWS CLI (Ubuntu/Linux)
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+# Verificar instalación
+aws --version
+
+# Configurar credenciales
+aws configure
+# AWS Access Key ID: [tu access key]
+# AWS Secret Access Key: [tu secret key]
+# Default region name: us-east-1
+# Default output format: json
+
+# Verificar configuración
+aws sts get-caller-identity
+
+# Listar instancias EC2
+aws ec2 describe-instances --query 'Reservations[*].Instances[*].[InstanceId,State.Name,PublicIpAddress]' --output table
+
+================================================================================
+10. TERRAFORM - INFRAESTRUCTURA
+================================================================================
+
+# Ir a directorio Terraform
+cd IaC/terraform
+
+# Generar SSH key (si no existe)
+ssh-keygen -t rsa -b 4096 -f ~/.ssh/iris-ml-key -N ""
+
+# Inicializar Terraform
+terraform init
+
+# Validar configuración
+terraform validate
+
+# Ver plan (qué se va a crear)
+terraform plan
+
+# Aplicar (crear infraestructura)
+terraform apply
+# Escribir: yes
+
+# Ver outputs
+terraform output
+
+# Obtener IP pública
+terraform output instance_public_ip
+export EC2_IP=$(terraform output -raw instance_public_ip)
+echo $EC2_IP
+
+# Ver estado actual
+terraform show
+
+# Destruir infraestructura (IMPORTANTE: evita cargos)
+terraform destroy
+# Escribir: yes
+
+# Forzar recreación de recurso específico
+terraform taint aws_instance.iris_ml
+terraform apply
+
+================================================================================
+11. ANSIBLE - DESPLIEGUE
+================================================================================
+
+# Ir a directorio Ansible
+cd IaC/ansible
+
+# Crear inventario con IP real (reemplazar $EC2_IP con tu IP)
+cat > inventory.ini << EOF
+[iris_ml_servers]
+production ansible_host=$EC2_IP ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/iris-ml-key
+
+[iris_ml_servers:vars]
+ansible_python_interpreter=/usr/bin/python3
+docker_image=saulhl07/iris-ml-classifier
+docker_tag=latest
+app_port=5000
+EOF
+
+# Probar conexión
+ansible all -m ping
+
+# Ejecutar comando en servidor
+ansible all -a "uptime"
+ansible all -a "docker --version"
+
+# Desplegar aplicación
+ansible-playbook deploy.yml
+
+# Verificar despliegue
+ansible-playbook verify.yml
+
+# Desplegar con verbosidad (debug)
+ansible-playbook deploy.yml -vvv
+
+# Ver logs en servidor remoto
+ansible iris_ml_servers -a "docker logs iris-ml-api"
+
+# Reiniciar contenedor
+ansible iris_ml_servers -a "docker restart iris-ml-api"
+
+# Verificar status de Docker
+ansible iris_ml_servers -a "systemctl status docker"
+
+================================================================================
+12. SSH - CONEXIÓN A EC2
+================================================================================
+
+# Conectar a instancia EC2 (reemplazar con tu IP)
+ssh -i ~/.ssh/iris-ml-key ubuntu@$EC2_IP
+
+# Conectar sin verificación de host key (primera vez)
+ssh -i ~/.ssh/iris-ml-key -o StrictHostKeyChecking=no ubuntu@$EC2_IP
+
+# Una vez dentro de EC2:
+
+# Ver contenedores
+docker ps
+
+# Ver logs
+docker logs iris-ml-api
+docker logs -f iris-ml-api --tail 50
+
+# Probar API desde EC2
+curl http://localhost:5000/health
+
+# Ver uso de recursos
+htop
+docker stats
+
+# Salir
+exit
+
+================================================================================
+13. PROBAR API EN PRODUCCIÓN (AWS)
+================================================================================
+
+# Health check (reemplazar $EC2_IP con tu IP)
+curl http://$EC2_IP:5000/health
+
+# Info del modelo
+curl http://$EC2_IP:5000/info
+
+# Predicción
+curl -X POST http://$EC2_IP:5000/predict \
+  -H "Content-Type: application/json" \
+  -d '{
+    "SepalLengthCm": 5.1,
+    "SepalWidthCm": 3.5,
+    "PetalLengthCm": 1.4,
+    "PetalWidthCm": 0.2
+  }'
+
+# Abrir en navegador
+echo "Health check: http://$EC2_IP:5000/health"
+echo "Info: http://$EC2_IP:5000/info"
+
+# En Linux:
+xdg-open http://$EC2_IP:5000/health
+
+================================================================================
+14. GITHUB ACTIONS - CI/CD
+================================================================================
+
+# Ver workflows en navegador
+# https://github.com/SaulHL08/Iris-RandomForest-Classifier/actions
+
+# Configurar secrets (desde web):
+# Settings > Secrets and variables > Actions > New repository secret
+# DOCKER_USERNAME: saulhl07
+# DOCKER_PASSWORD: [tu password]
+
+# Ver status de workflows con GitHub CLI
+gh workflow list
+gh run list
+
+================================================================================
+15. UTILIDADES Y TROUBLESHOOTING
+================================================================================
+
+# Ver todos los puertos en uso
+sudo netstat -tulpn | grep LISTEN
+sudo lsof -i -P -n | grep LISTEN
+
+# Matar proceso en puerto 5000
+sudo lsof -ti:5000 | xargs kill -9
+
+# Limpiar Docker (liberar espacio)
+docker system prune -a
+docker volume prune
+
+# Ver tamaño de imágenes Docker
+docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}"
+
+# Ver logs del sistema (EC2)
+sudo journalctl -u docker -f
+
+# Verificar conectividad a EC2
+ping $EC2_IP
+telnet $EC2_IP 5000
+nc -zv $EC2_IP 5000
+
+================================================================================
+16. COMANDOS PARA VIDEO/DEMO
+================================================================================
+
+# Setup rápido para demostración
+docker stop iris-ml-api 2>/dev/null || true
+docker rm iris-ml-api 2>/dev/null || true
+docker build -t iris-ml-classifier:latest .
+docker run -d -p 5000:5000 --name iris-ml-api iris-ml-classifier:latest
+sleep 10
+curl http://localhost:5000/health
+
+# Tests rápidos
+pytest tests/ -v --cov=src --cov-report=term
+
+# Mostrar estructura del proyecto
+tree -L 2 -I '__pycache__|*.pyc|.git|venv'
+# O en Windows:
+dir /s /b | find /v ".git" | find /v "__pycache__"
+
+# Ver workflow status
+git log --oneline -10
+
+================================================================================
+17. LIMPIEZA Y MANTENIMIENTO
+================================================================================
+
+# Detener todos los contenedores
+docker stop $(docker ps -aq)
+
+# Eliminar todos los contenedores
+docker rm $(docker ps -aq)
+
+# Limpiar imágenes sin usar
+docker image prune -a
+
+# Destruir infraestructura AWS
+cd IaC/terraform
+terraform destroy -auto-approve
+
+================================================================================
+18. BACKUP Y VERSIONADO
+================================================================================
+
+# Crear tag de versión
+git tag -a v1.0.0 -m "Primera versión estable"
+git push origin v1.0.0
+
+# Ver tags
+git tag -l
+
+# Crear branch de release
+git checkout -b release/v1.0.0
+git push origin release/v1.0.0
+
+# Exportar modelo entrenado
+cp models/model.pkl models/model_v1.0.0.pkl
+
+================================================================================
+19. MONITOREO (PRODUCCIÓN)
+================================================================================
+
+# Ver estadísticas de contenedor en tiempo real
+docker stats iris-ml-api
+
+# Ver procesos dentro del contenedor
+docker top iris-ml-api
+
+# Inspeccionar contenedor
+docker inspect iris-ml-api
+
+# Ver health status
+docker inspect --format='{{.State.Health.Status}}' iris-ml-api
